@@ -4,7 +4,7 @@ import { ValidateBankSlipVerifyDigit } from "../data/usecases/bank-slip/validate
 import { GetBankSlipSplittedData } from "../data/usecases/bank-slip/get-bank-slip-splitted-data";
 import { GetBankSlipValue } from "../data/usecases/bank-slip/get-bank-slip-value"; 
 import { GetTicketDueDate } from "../data/usecases/get-ticket-due-date"; 
-import { GetDigitableSynonymousCode } from "../data/usecases/bank-slip/get-bank-slip-synonymous-code"; 
+import { GetBankSlipSynonymousCode } from "../data/usecases/bank-slip/get-bank-slip-synonymous-code"; 
 
 export function makeBankSlip(value: string) {
     const validateBankSlipVerify = new ValidateBankSlipVerifyDigit();
@@ -12,7 +12,7 @@ export function makeBankSlip(value: string) {
     const getBankSlipSplittedData = new GetBankSlipSplittedData();
     const getBankSlipValue = new GetBankSlipValue();
     const getTicketDueDate = new GetTicketDueDate();
-    const getDigitableSynonymousCode = new GetDigitableSynonymousCode();
+    const getDigitableSynonymousCode = new GetBankSlipSynonymousCode();
     const bankSlip = new ParseTicketJSON(
         validateBankSlip,
         validateBankSlipVerify,

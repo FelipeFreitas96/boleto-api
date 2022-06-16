@@ -3,6 +3,15 @@ import { GetTicketSynonymousCodeUsecase } from '../../../domain/usecases/get-tic
 
 export class GetDigitableSynonymousCode implements GetTicketSynonymousCodeUsecase {
     run(splittedData: SplittedData) {
-        return splittedData.data;
+        return [
+            splittedData.bankIdentifier,
+            splittedData.coinCode,
+            splittedData.verifiyDigitGeneral,
+            splittedData.dueDate,
+            splittedData.value,
+            splittedData.freeCampField1,
+            splittedData.fullCampField2,
+            splittedData.fullCampField3,
+        ].join("");
     }
 }
