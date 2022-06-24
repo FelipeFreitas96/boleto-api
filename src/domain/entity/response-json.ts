@@ -3,3 +3,7 @@ export type ResponseJSON = {
     amount: string;
     expirationDate: string;
 }
+
+export type ResponseError = {
+    message: string;
+}

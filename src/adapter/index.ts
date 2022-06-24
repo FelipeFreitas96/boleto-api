@@ -1,2 +1,2 @@
-export * from './make-bank-slip';
-export * from './make-digitable-line';
+export * as BankSlip from './bank-slip';
+export * as Conssectionary from './conssectionary';
