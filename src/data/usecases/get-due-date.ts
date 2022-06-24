@@ -15,7 +15,7 @@ export class GetDueDate<Data extends { dueDate: string }> implements GetDueDateU
     }
 
     run(splittedData: Data) {
-        const factor = Number(splittedData.dueDate); 
+        const factor = Number(splittedData.dueDate) || 0; 
         const date = this.calculateDate(factor);
         return String(date.toISOString().split("T")[0]);
     }

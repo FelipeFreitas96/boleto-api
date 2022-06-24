@@ -5,30 +5,31 @@ import { GetFourtyFourBankSlipBankSlipData } from "./bank-slip/fourty-four/get-f
 import { GetValue } from "../../data/usecases/get-value"; 
 import { GetDueDate } from "../../data/usecases/get-due-date"; 
 import { GetFourtyFourBankSlipSynonymousCode } from "./bank-slip/fourty-four/get-fourty-four-bank-slip-synonymous-code"; 
+import { BankSlipData } from "../../domain/entity/bank-slip-data";
 
 function makeSut() {
-    const validateFourtyFourSlip = new ValidateFourtyFourBankSlip();
-    const validateFourtyFourSlipVerify = new ValidateFourtyFourBankSlipVerifyDigit();
-    const getFourtyFourSlipBankSlipData = new GetFourtyFourBankSlipBankSlipData();
-    const getSlipValue = new GetValue();
-    const getSlipDueDate = new GetDueDate();
-    const getDigitableSynonymousCode = new GetFourtyFourBankSlipSynonymousCode();
-    const bankSlip = new ParseJSON(
-        validateFourtyFourSlip,
-        validateFourtyFourSlipVerify,
-        getFourtyFourSlipBankSlipData,
-        getSlipValue,
-        getSlipDueDate,
-        getDigitableSynonymousCode,
-    );
+    const validateFourtyFourBankSlip = new ValidateFourtyFourBankSlip();
+    const validateFourtyFourBankSlipVerifyDigit = new ValidateFourtyFourBankSlipVerifyDigit();
+    const getFourtyFourBankSlipBankSlipData = new GetFourtyFourBankSlipBankSlipData();
+    const getValue = new GetValue();
+    const getDueDate = new GetDueDate();
+    const getFourtyFourBankSlipSynonymousCode = new GetFourtyFourBankSlipSynonymousCode();
+    const bankSlip = new ParseJSON<BankSlipData>({
+        validateUsecase: validateFourtyFourBankSlip,
+        validateVerifyDigitsUsecase: validateFourtyFourBankSlipVerifyDigit,
+        getDataUsecase: getFourtyFourBankSlipBankSlipData,
+        getValueUsecase: getValue,
+        getDueDateUsecase: getDueDate,
+        getSynonymousCodeUsecase: getFourtyFourBankSlipSynonymousCode,
+    });
     
     return  {
-        validateFourtyFourSlipVerify,
-        validateFourtyFourSlip,
-        getFourtyFourSlipBankSlipData,
-        getSlipValue,
-        getSlipDueDate,
-        getDigitableSynonymousCode,
+        validateFourtyFourBankSlip,
+        validateFourtyFourBankSlipVerifyDigit,
+        getFourtyFourBankSlipBankSlipData,
+        getValue,
+        getDueDate,
+        getFourtyFourBankSlipSynonymousCode,
         bankSlip,
     };
 }
@@ -36,17 +37,20 @@ function makeSut() {
 describe('Parse Slip Json', () => {
     test('precisa dar throw quando a validação do slip der errado', () => {
         const sut = makeSut();
-        expect(() => sut.bankSlip.run("any_slip")).toThrow();
+        const response = sut.bankSlip.run("any_slip");
+        expect(response.message).toBe('Formato de boleto inválido.');
     })
     test('precisa dar throw quando o digito der errado', () => {
         const sut = makeSut();
-        jest.spyOn(sut.validateFourtyFourSlip, "run").mockImplementationOnce(() => true);
-        expect(() => sut.bankSlip.run("any_slip")).toThrow();
+        jest.spyOn(sut.validateFourtyFourBankSlip, "run").mockImplementationOnce(() => true);
+
+        const response = sut.bankSlip.run("any_slip");
+        expect(response.message).toBe('Digito verificador inválido.');
     })
-    test('precisa passar quando tudo estiver correto', () => {
+    test('precisa passar quando estiver tudo certo', () => {
         const sut = makeSut();
-        jest.spyOn(sut.validateFourtyFourSlip, "run").mockImplementationOnce(() => true);
-        jest.spyOn(sut.validateFourtyFourSlipVerify, "run").mockImplementationOnce(() => true);
-        expect(() => sut.bankSlip.run("any_slip")).not.toBeUndefined();
+        jest.spyOn(sut.validateFourtyFourBankSlip, "run").mockImplementationOnce(() => true);
+        jest.spyOn(sut.validateFourtyFourBankSlipVerifyDigit, "run").mockImplementationOnce(() => true);
+        expect(sut.bankSlip.run("any_slip")).not.toBeUndefined();
     })
 })
